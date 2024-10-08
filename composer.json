@@ -1,0 +1,26 @@
+{
+    "name": "bbalet/php-ingestion-exporter",
+    "description": "Provide a unified way to log and export ingestion statistics in PHP",
+    "type": "library",
+    "version": "0.0.1",
+    "require": {
+        "ext-pdo": "*"
+    },
+    "require-dev": {
+        "ext-xml": "*",
+        "ext-mbstring": "*",
+        "phpunit/phpunit": "^11.4",
+        "phpstan/phpstan": "^1.12"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Bbalet\\PhpIngestionExporter\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Benjamin BALET"
+        }
+    ]
+}

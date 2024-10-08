@@ -1,0 +1,61 @@
+<?php
+
+namespace Bbalet\PhpIngestionExporter\Entity;
+
+/**
+ * A Batch is used to measure an ingestion of data.
+ * A Batch can be composed of one or more fragments.
+ */
+class Batch extends BatchType {
+    use MeasurementTrait;
+
+    /**
+     * Collection of Fragments
+     * @var FragmentCollection
+     */
+    private $fragments;
+
+    /**
+     * Instantiate a Batch object
+     * @param mixed $name name of the batch (sanitized)
+     * @param mixed $description description of the batch (derivated from name is null)
+     * @param mixed $id Optional unique identifier of the batch
+     */
+    function __construct($name, $description = null, $id = null) {
+        $this->fragments = [];
+        parent::__construct($name, $description, $id);
+    }
+
+    /**
+     * Return a fragment by its name or null
+     * @param string $name name of the fragment
+     * @return Fragment|null
+     */
+    public function getFragmentByName($name) {
+        return $this->fragments[$name] ?? null;
+    }
+
+    /**
+     * Add a fragment to the batch and start its timer
+     * @param string $name name of the fragment
+     * @return Fragment the new fragment
+     */
+    public function startFragment($name, $description = null) {
+        $fragment = new Fragment($this, $name, $description);
+        $fragment->start();
+        $this->fragments[$name] = $fragment;
+        return $fragment;
+    }
+
+    /**
+     * End the measurement of a batch and all its children fragments.
+     * save the current time in microseconds
+     * @return void
+     */
+    public function stop() {
+        $this->microEndTime = microtime(true);  //the batch
+        foreach ($this->fragments as $fragment) {
+            $fragment->stop();
+        }
+    }
+}
