@@ -82,5 +82,18 @@ final class BatchTest extends TestCase
         $fragment2 = $batch->startFragment("file1", "new");
         $fragmentFromCol = $batch->getFragmentByName("file1");
         $this->assertSame("new", $fragmentFromCol->getDescription());
-    } 
+    }
+
+    public function testIterateOnFragmentsAndDisplayTheirNames(): void
+    {
+        $batch = new Batch("dummy_name");
+        $fragment1 = $batch->startFragment("file1");
+        $fragment2 = $batch->startFragment("file2");
+        $fragments = $batch->getFragments();
+        foreach ($fragments as $fragment) {
+            $this->assertContains($fragment->getName(), ["file1", "file2"]);
+        }
+        
+    }
+
 }

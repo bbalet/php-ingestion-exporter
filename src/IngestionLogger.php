@@ -8,7 +8,7 @@ class IngestionLogger {
 
     /**
      * Collection of batches
-     * @var BatchCollection
+     * @var \ArrayObject
      */
     private $batches;
 
@@ -19,6 +19,7 @@ class IngestionLogger {
     private $dbConnection;
 
     public function __construct() {
+        $this->batches = new \ArrayObject();
         
     }
 

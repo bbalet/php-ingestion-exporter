@@ -13,9 +13,15 @@ class PrometheusExporter {
 
     /**
      * Collection of Exportable items
-     * @var 
+     * @var \ArrayObject
      */
     private $exportableItems;
+
+    /**
+     * List of batches
+     * @var \ArrayObject
+     */
+    private $batches;
 
     /**
      * Instantiate a PrometheusExporter object

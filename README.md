@@ -86,5 +86,5 @@ fragment - batch_id, name, and start/end nanoseconds timestamp
 
 ## Tests
 
-./vendor/bin/phpunit --testdox tests
-./vendor/bin/phpstan analyse src tests
+    ./vendor/bin/phpunit --testdox tests
+    ./vendor/bin/phpstan analyse src tests

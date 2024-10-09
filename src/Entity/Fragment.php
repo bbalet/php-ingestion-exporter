@@ -11,7 +11,7 @@ class Fragment {
 
     /**
      * The batch to which the fragment belong to
-     * @var 
+     * @var Batch
      */
     private $parentBatch;
 
@@ -23,15 +23,26 @@ class Fragment {
      */
     function __construct(Batch $parentBatch, $name, $description = null) {
         $this->parentBatch = $parentBatch;
+        $this->statusCode = self::UNKNOWN;
         $this->setName($name);
         $this->setDescription($description);
     }
 
     /**
+     * Return the parent batch
+     * @return Batch
+     */
+    function getBatch() {
+        return $this->parentBatch;
+    }
+
+    /**
      * End the measurement of a fragment, save the current time in microseconds
+     * @param int $statusCode status code of the fragment
      * @return void
      */
-    public function stop() {
+    public function stop($statusCode = self::SUCCESS) {
+        $this->statusCode = $statusCode;
         $this->microEndTime = microtime(true);
     }
 }

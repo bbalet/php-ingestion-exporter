@@ -11,7 +11,7 @@ class Batch extends BatchType {
 
     /**
      * Collection of Fragments
-     * @var FragmentCollection
+     * @var \ArrayObject
      */
     private $fragments;
 
@@ -22,7 +22,7 @@ class Batch extends BatchType {
      * @param mixed $id Optional unique identifier of the batch
      */
     function __construct($name, $description = null, $id = null) {
-        $this->fragments = [];
+        $this->fragments = new \ArrayObject();
         parent::__construct($name, $description, $id);
     }
 
@@ -33,6 +33,14 @@ class Batch extends BatchType {
      */
     public function getFragmentByName($name) {
         return $this->fragments[$name] ?? null;
+    }
+
+    /**
+     * Return all fragments
+     * @return \ArrayObject
+     */
+    public function getFragments() {
+        return $this->fragments;
     }
 
     /**
@@ -50,9 +58,11 @@ class Batch extends BatchType {
     /**
      * End the measurement of a batch and all its children fragments.
      * save the current time in microseconds
+     * @param int $statusCode status code of the batch
      * @return void
      */
-    public function stop() {
+    public function stop($statusCode = self::SUCCESS) {
+        $this->statusCode = $statusCode;
         $this->microEndTime = microtime(true);  //the batch
         foreach ($this->fragments as $fragment) {
             $fragment->stop();
