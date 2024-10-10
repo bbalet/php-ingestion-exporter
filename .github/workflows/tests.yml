@@ -2,14 +2,14 @@
 name: Testing the library
 on: [push, pull_request]
 jobs:
-  symfony:
+  test_lib:
     name: Symfony (PHP ${{ matrix.php-versions }})
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['7.2','8.3']
+        php-versions: ['8.3']
     steps:
       - name: Checkout
         uses: actions/checkout@v3
