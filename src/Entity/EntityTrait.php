@@ -2,6 +2,10 @@
 
 namespace Bbalet\PhpIngestionExporter\Entity;
 
+/**
+ * EntityTrait contains the common attributes and methods of all entities
+ * that will be stored in the database
+ */
 trait EntityTrait {
     /**
      * Unique identifier that will be stored in DB

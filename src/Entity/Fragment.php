@@ -16,7 +16,21 @@ class Fragment {
     private $parentBatch;
 
     /**
-     * Instanciate a Fragment
+     * Size of the file in bytes
+     *
+     * @var int
+     */
+    private $fileSize;
+
+    /**
+     * Number of lines in the file
+     *
+     * @var int
+     */
+    private $linesCount;
+
+    /**
+     * Instanciate a Fragment which is most of the time a file
      * @param \Bbalet\PhpIngestionExporter\Entity\Batch $parentBatch a fragment belongs to a batch
      * @param string $name Fragment name (this is sanitized)
      * @param string $description Fragment description, if null derivated from name
@@ -29,20 +43,73 @@ class Fragment {
     }
 
     /**
-     * Return the parent batch
-     * @return Batch
+     * Instanciate a Fragment with file stats
+     * @param \Bbalet\PhpIngestionExporter\Entity\Batch $parentBatch a fragment belongs to a batch
+     * @param string $name Fragment name (this is sanitized)
+     * @param string $description Fragment description, if null derivated from name
+     * @param string $filePath path to the file
+     * @return Fragment
      */
-    function getBatch() {
-        return $this->parentBatch;
+    public static function withFileStats(Batch $parentBatch, $name, $description = null, $filePath) {
+        $instance = new self($parentBatch, $name, $description, $filePath);
+        $instance->linesCount = $instance->countLines($filePath);
+        $instance->fileSize = filesize($filePath);
+        return $instance;
     }
 
     /**
      * End the measurement of a fragment, save the current time in microseconds
      * @param int $statusCode status code of the fragment
+     * @param int $fileSize size of the file in bytes
+     * @param int $linesCount number of lines in the file
      * @return void
      */
-    public function stop($statusCode = self::SUCCESS) {
+    public function stop($statusCode = self::SUCCESS, $fileSize = 0, $linesCount = 0) {
         $this->statusCode = $statusCode;
+        $this->fileSize = $fileSize;
+        $this->linesCount = $linesCount;
         $this->microEndTime = microtime(true);
+    }
+
+    /**
+     * Count the number of lines in a file
+     * @param string $filePath path to the file
+     * @param string $endOfLine character(s) used to mark the end of a line
+     * @return int number of lines in the file
+     */
+    public function countLines($filePath, $endOfLine = PHP_EOL) {
+        $linecount = 0;
+        $handle = fopen($filePath, "r");
+        while(!feof($handle)){
+          $line = fgets($handle, 4096);
+          $linecount = $linecount + substr_count($line, $endOfLine);
+        }
+        fclose($handle);
+        $this->linesCount = $linecount + 1;
+        return $linecount;
+    }
+
+    /**
+     * Return the number of lines in the file
+     * @return int number of lines
+     */
+    public function getLinesCount() {
+        return $this->linesCount;
+    }
+
+    /**
+     * Return the size of the file in bytes
+     * @return int size of the file
+     */
+    public function getFileSize() {
+        return $this->fileSize;
+    }
+
+    /**
+     * Return the parent batch
+     * @return Batch
+     */
+    function getBatch() {
+        return $this->parentBatch;
     }
 }

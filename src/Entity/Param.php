@@ -7,12 +7,23 @@ namespace Bbalet\PhpIngestionExporter\Entity;
  */
 class Param {
 
+    /**
+     * Name of the parameter
+     * @var string
+     */
     private $key;
 
-
+    /**
+     * Value of the parameter
+     * @var string
+     */
     private $value;
 
-
+    /**
+     * Instanciate a parameter
+     * @param string $key parameter name
+     * @param mixed $value parameter value
+     */
     public function __construct($key, $value) {
         $this->key = $key;
         $this->value = $value;
@@ -28,7 +39,7 @@ class Param {
     
     /**
      * Return the value
-     * @return mixed value
+     * @return string value
      */
     public function getValue() {
         return $this->value;

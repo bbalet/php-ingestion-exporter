@@ -46,4 +46,26 @@ final class FragmentTest extends TestCase
         $elapsedTime = $fragment->getElaspedTime();
         $this->assertEqualsWithDelta(0.020, $elapsedTime, 0.009);
     }
+
+    public function testCountNumberOfLinesInFile(): void
+    {
+        $batch = new Batch("dummy_name");
+        $data = "line 1". PHP_EOL . "line 2". PHP_EOL . "line 3";
+        $tempFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR. uniqid();
+        file_put_contents($tempFile, $data);
+        $fragment = new Fragment($batch, "dummy_name");
+        $fragment->countLines($tempFile);
+        $this->assertSame(3, $fragment->getLinesCount());
+    }
+
+    public function testGetFileSize(): void
+    {
+        $batch = new Batch("dummy_name");
+        $data = "line 1". PHP_EOL . "line 2". PHP_EOL . "line 3";
+        $tempFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR. uniqid();
+        file_put_contents($tempFile, $data);
+        $fragment = Fragment::withFileStats($batch, "dummy_name", null, $tempFile);
+        $expectedFileSize = 18 + (strlen(PHP_EOL) * 2);
+        $this->assertSame($expectedFileSize, $fragment->getFileSize());
+    }
 }

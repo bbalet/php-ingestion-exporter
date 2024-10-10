@@ -2,6 +2,9 @@
 
 namespace Bbalet\PhpIngestionExporter\Entity;
 
+/**
+ * A trait to measure the time of a process and its status
+ */
 trait MeasurementTrait {
     
     const SUCCESS = 0;

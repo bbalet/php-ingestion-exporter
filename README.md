@@ -1,5 +1,9 @@
 # php-ingestion-exporter
 
+[![codecov](https://codecov.io/gh/bbalet/php-ingestion-exporter/graph/badge.svg?token=49L8O0L3Y5)](https://codecov.io/gh/bbalet/php-ingestion-exporter)
+[![Maintainability](https://api.codeclimate.com/v1/badges/c90d88a8a791fd4f6080/maintainability)](https://codeclimate.com/github/bbalet/php-ingestion-exporter/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/c90d88a8a791fd4f6080/test_coverage)](https://codeclimate.com/github/bbalet/php-ingestion-exporter/test_coverage)
+
 **php-ingestion-exporter** is a PHP library that suggests a unified way to log information about data ingestion and export it (e.g. Prometheus status page).
 
 It is framework agnostic, doesn't use an ORM, has no dependency, and is designed to work with PHP7.2+.
