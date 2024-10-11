@@ -5,7 +5,7 @@ namespace Bbalet\PhpIngestionExporter\Entity;
 /**
  * Parameter
  */
-class Param {
+class Parameter {
 
     /**
      * Name of the parameter
