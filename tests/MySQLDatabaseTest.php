@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use Bbalet\PhpIngestionExporter\Database\DatabaseFactory;
 use Bbalet\PhpIngestionExporter\Entity\BatchType;
+use Bbalet\PhpIngestionExporter\Entity\Batch;
 
 final class MySQLDatabaseTest extends TestCase
 {
@@ -27,5 +28,22 @@ final class MySQLDatabaseTest extends TestCase
         $batchType = $db->getBatchType("test");
         $this->assertSame("test", $batchType->getName());
         $this->assertSame("description", $batchType->getDescription());
+        $this->assertGreaterThan(0, $batchType->getId());
+    }
+
+    public function testInsertMultipleBatchesButGetTheLastExecutedBatch(): void
+    {
+        $tempDB = sys_get_temp_dir() . DIRECTORY_SEPARATOR. uniqid() . ".sqlite3";
+        $consStr = "sqlite:" . $tempDB;
+        $db = DatabaseFactory::getDatabaseFromConnectionString($consStr);
+        $batch1 = new Batch("batch");
+        $batch2 = new Batch("batch");
+        $batch1->start();
+        $db->setBatch($batch1);
+        $batch2->start();
+        $db->setBatch($batch2);        
+        $lastBatch = $db->getLastBatch("batch");
+        //Depending on the execution platform, the floats may differ in precision
+        $this->assertEqualsWithDelta($batch2->getStartTime(), $lastBatch->getStartTime(), 0.001);
     }
 }

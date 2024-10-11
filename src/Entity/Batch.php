@@ -27,6 +27,24 @@ class Batch extends BatchType {
     }
 
     /**
+     * Create a Batch entity from the database
+     * @param int $id
+     * @param string $name
+     * @param string $description
+     * @param float $startTime
+     * @param float $endTime
+     * @param int $statusCode
+     * @return Batch
+     */
+    static function createFromDB($id, $name, $description, $startTime, $endTime, $statusCode) {
+        $instance = new self($name, $description, $id);
+        $instance->microStartTime = $startTime;
+        $instance->microEndTime = $endTime;
+        $instance->statusCode = $statusCode;
+        return $instance;
+    }
+
+    /**
      * Return a fragment by its name or null
      * @param string $name name of the fragment
      * @return Fragment|null

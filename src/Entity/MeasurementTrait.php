@@ -42,6 +42,22 @@ trait MeasurementTrait {
     }
 
     /**
+     * Return the start time attribute
+     * @return float
+     */
+    public function getStartTime() {
+        return $this->microStartTime;
+    }
+
+    /**
+     * Return the end time attribute
+     * @return float
+     */
+    public function getEndTime() {
+        return $this->microEndTime;
+    }
+
+    /**
      * Return the duration of a measurement in microseconds
      * @return float elapsed time between start and end
      */

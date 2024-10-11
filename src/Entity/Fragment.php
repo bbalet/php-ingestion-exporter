@@ -43,6 +43,29 @@ class Fragment {
     }
 
     /**
+     * Create a Fragment entity from the database
+     * @param int $id
+     * @param string $name
+     * @param string $description
+     * @param float $startTime
+     * @param float $endTime
+     * @param int $statusCode
+     * @param int $fileSize
+     * @param int $linesCount
+     * @return Fragment
+     */
+    static function createFromDB($batch, $id, $name, $description, $startTime, $endTime, $statusCode, $fileSize, $linesCount) {
+        $instance = new self($batch, $name, $description);
+        $instance->id = $id;
+        $instance->microStartTime = $startTime;
+        $instance->microEndTime = $endTime;
+        $instance->statusCode = $statusCode;
+        $instance->fileSize = $fileSize;
+        $instance->linesCount = $linesCount;
+        return $instance;
+    }
+
+    /**
      * Instanciate a Fragment with file stats
      * @param \Bbalet\PhpIngestionExporter\Entity\Batch $parentBatch a fragment belongs to a batch
      * @param string $name Fragment name (this is sanitized)

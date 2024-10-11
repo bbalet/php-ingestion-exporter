@@ -3,6 +3,7 @@
 namespace Bbalet\PhpIngestionExporter\Database;
 
 use Bbalet\PhpIngestionExporter\Entity\BatchType;
+use Bbalet\PhpIngestionExporter\Entity\Batch;
 
 /**
  * Abtraction of a database
@@ -48,6 +49,20 @@ abstract class AbstractDatabase
      * @return BatchType
      */
     abstract public function getBatchType($name);
+
+    /**
+     * Persist a Batch entity into the database
+     * @param Batch $batch
+     * @return void
+     */
+    abstract public function setBatch($batch);
+
+    /**
+     * Get the last executed Batch entity from the database
+     * @param string $name
+     * @return Batch
+     */
+    abstract public function getLastBatch($name);
 
     /**
      * Migrate the schema of the database
