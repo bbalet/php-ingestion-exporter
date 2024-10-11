@@ -14,7 +14,7 @@ class IngestionLogger {
 
     /**
      * PDO Object for the database
-     * @var 
+     * @var \PDO
      */
     private $dbConnection;
 

@@ -63,6 +63,15 @@ trait EntityTrait {
     }
 
     /**
+     * Set the unique identifier of the entity
+     * @param int $id internal id (in the DB)
+     * @return void
+     */
+    public function setId($id) {
+        $this->id = $id;
+    }
+
+    /**
      * Return the name of the entity
      * @return string
      */

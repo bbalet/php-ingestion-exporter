@@ -69,6 +69,6 @@ trait MeasurementTrait {
             "3 - Unknown, " .
             "4 - Partial, " .
             "5 - Timeout, " .
-            "6 - Not Found ";
+            "6 - Not Found";
     }
 }

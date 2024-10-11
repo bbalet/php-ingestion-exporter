@@ -5,7 +5,7 @@ namespace Bbalet\PhpIngestionExporter\Database;
 /**
  * Factory to create a database object from a PDO connection or a connection string
  */
-class DatabaseFactory
+final class DatabaseFactory
 {
     /**
      * Singleton instance
@@ -41,7 +41,8 @@ class DatabaseFactory
 
     /**
      * Get a database object from a connection string
-     * @param string $connectionString
+     * @param string $connectionString Connection string to the database
+     * @param string $prefix table name prefix
      * @return AbstractDatabase
      */
     public static function getDatabaseFromConnectionString($connectionString, $prefix = 'pingexp_') {
@@ -51,7 +52,8 @@ class DatabaseFactory
 
     /**
      * Get a database object from a connection string
-     * @param string $connectionString
+     * @param \PDO $pdoConnection Active PDO Connection to the database
+     * @param string $prefix table name prefix
      * @return AbstractDatabase
      */
     public static function getDatabaseFromPDOObject($pdoConnection, $prefix = 'pingexp_')

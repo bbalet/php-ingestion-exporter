@@ -64,7 +64,7 @@ final class FragmentTest extends TestCase
         $data = "line 1". PHP_EOL . "line 2". PHP_EOL . "line 3";
         $tempFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR. uniqid();
         file_put_contents($tempFile, $data);
-        $fragment = Fragment::withFileStats($batch, "dummy_name", null, $tempFile);
+        $fragment = Fragment::withFileStats($batch, $tempFile, "dummy_name");
         $expectedFileSize = 18 + (strlen(PHP_EOL) * 2);
         $this->assertSame($expectedFileSize, $fragment->getFileSize());
     }

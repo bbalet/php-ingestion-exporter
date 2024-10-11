@@ -50,8 +50,8 @@ class Fragment {
      * @param string $filePath path to the file
      * @return Fragment
      */
-    public static function withFileStats(Batch $parentBatch, $name, $description = null, $filePath) {
-        $instance = new self($parentBatch, $name, $description, $filePath);
+    public static function withFileStats(Batch $parentBatch, $filePath, $name, $description = null) {
+        $instance = new self($parentBatch, $name, $description);
         $instance->linesCount = $instance->countLines($filePath);
         $instance->fileSize = filesize($filePath);
         return $instance;
