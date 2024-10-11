@@ -2,6 +2,8 @@
 
 namespace Bbalet\PhpIngestionExporter\Database;
 
+use Bbalet\PhpIngestionExporter\Entity\BatchType;
+
 /**
  * SQLite database implementation
  * This class is responsible for managing the SQLite database
@@ -25,7 +27,7 @@ class SqliteDatabase extends AbstractDatabase
      * @return array
      */
     public function getParameters() {
-        $stmt = $this->pdoConnection->query("SELECT key, value FROM {$this->prefix}_param;");
+        $stmt = $this->pdoConnection->query("SELECT key, value FROM {$this->prefix}_parameter;");
         $params  = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
         return $params;
     }
@@ -36,8 +38,30 @@ class SqliteDatabase extends AbstractDatabase
      * @param string $value
      */
     public function setParameter($key, $value) {
-        $stmt = $this->pdoConnection->prepare("INSERT OR REPLACE INTO {$this->prefix}_param (key, value) VALUES (:key, :value);");
+        $stmt = $this->pdoConnection->prepare("INSERT OR REPLACE INTO {$this->prefix}_parameter (key, value) VALUES (:key, :value);");
         $stmt->execute(array(':key' => $key, ':value' => $value));
+    }
+
+    /**
+     * Persist a BatchType entity into the database
+     * @param BatchType $batchType
+     * @return void
+     */
+    public function setBatchType($batchType) {
+        $stmt = $this->pdoConnection->prepare("INSERT OR REPLACE INTO {$this->prefix}_batch_type (name, description) VALUES (:name, :description);");
+        $stmt->execute(array(':name' => $batchType->getName(), ':description' => $batchType->getDescription()));
+    }
+
+    /**
+     * Get a BatchType entity from the database
+     * @param string $name
+     * @return BatchType
+     */
+    public function getBatchType($name) {
+        $stmt = $this->pdoConnection->query("SELECT name, description FROM {$this->prefix}_batch_type WHERE name=:name;");
+        $stmt->execute(array(':name' => $name));
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return new BatchType($row['name'], $row['description']);
     }
 
     /**
@@ -45,11 +69,34 @@ class SqliteDatabase extends AbstractDatabase
      */
     protected function migrateSchema() {
         // Create the parameter table
-        $createParamTable = "CREATE TABLE IF NOT EXISTS {$this->prefix}_param (
+        $createParameterTable = "CREATE TABLE IF NOT EXISTS {$this->prefix}_parameter (
             key TEXT PRIMARY KEY,
             value TEXT
         );";
-        $this->pdoConnection->exec($createParamTable);
+        $this->pdoConnection->exec($createParameterTable);
+        // Create the batch type table
+        $createBatchTypeTable = "CREATE TABLE IF NOT EXISTS {$this->prefix}_batch_type (
+            batch_type_id INTEGER PRIMARY KEY,
+            name TEXT,
+            description TEXT
+        );";
+        $this->pdoConnection->exec($createBatchTypeTable);
+        
+        $createIndexOnBatchTypeTable = "CREATE UNIQUE INDEX {$this->prefix}_batch_type_name
+            ON {$this->prefix}_batch_type(name);";
+        $this->pdoConnection->exec($createIndexOnBatchTypeTable);
+
+        // Create the batch table
+        $createBatchTable = "CREATE TABLE IF NOT EXISTS {$this->prefix}_batch (
+            batch_id INTEGER PRIMARY KEY,
+            batch_type_id INTEGER,
+            start_time REAL,
+            end_time REAL,
+            status_code INTEGER,
+            CONSTRAINT {$this->prefix}_batch_batch_type_id
+            FOREIGN KEY (batch_type_id) REFERENCES {$this->prefix}_batch_type(batch_type_id) 
+        );";
+        $this->pdoConnection->exec($createBatchTable);
     }
 }
 

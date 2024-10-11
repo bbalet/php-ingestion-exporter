@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Bbalet\PhpIngestionExporter\Database\DatabaseFactory;
+use Bbalet\PhpIngestionExporter\Entity\BatchType;
 
 final class MySQLDatabaseTest extends TestCase
 {
@@ -14,5 +15,17 @@ final class MySQLDatabaseTest extends TestCase
         $db->setParameter("test", "1024");
         $params = $db->getParameters();
         $this->assertSame("1024", $params["test"]);
+    }
+
+    public function testSetAndGetBatchType(): void
+    {
+        $tempDB = sys_get_temp_dir() . DIRECTORY_SEPARATOR. uniqid() . ".sqlite3";
+        $consStr = "sqlite:" . $tempDB;
+        $db = DatabaseFactory::getDatabaseFromConnectionString($consStr);
+        $newBatchType = new BatchType("test","description");
+        $db->setBatchType($newBatchType);
+        $batchType = $db->getBatchType("test");
+        $this->assertSame("test", $batchType->getName());
+        $this->assertSame("description", $batchType->getDescription());
     }
 }

@@ -45,7 +45,7 @@ final class DatabaseFactory
      * @param string $prefix table name prefix
      * @return AbstractDatabase
      */
-    public static function getDatabaseFromConnectionString($connectionString, $prefix = 'pingexp_') {
+    public static function getDatabaseFromConnectionString($connectionString, $prefix = 'pingexp') {
         $pdoConnection = new \PDO($connectionString);
         return static::getDatabaseFromPDOObject($pdoConnection, $prefix);
     }
@@ -56,7 +56,7 @@ final class DatabaseFactory
      * @param string $prefix table name prefix
      * @return AbstractDatabase
      */
-    public static function getDatabaseFromPDOObject($pdoConnection, $prefix = 'pingexp_')
+    public static function getDatabaseFromPDOObject($pdoConnection, $prefix = 'pingexp')
     {
         $instance = static::getInstance();
         $driver = $pdoConnection->getAttribute(\PDO::ATTR_DRIVER_NAME);
