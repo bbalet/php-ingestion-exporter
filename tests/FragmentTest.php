@@ -8,38 +8,33 @@ final class FragmentTest extends TestCase
 {
     public function testNameIsSanitized(): void
     {
-        $batch = new Batch("dummy_name");
-        $fragment = new Fragment($batch, "this is not safe <script>");
+        $fragment = new Fragment("this is not safe <script>");
         $this->assertSame("this_is_not_safe_script_", $fragment->getName());
     }
 
     public function testEmptyNameIsReplacedWithDefaultValue(): void
     {
-        $batch = new Batch("dummy_name");
-        $fragment = new Fragment($batch, "");
+        $fragment = new Fragment("");
         $this->assertSame("default_fragment", $fragment->getName());
-        $fragment = new Fragment($batch, "_");
+        $fragment = new Fragment("_");
         $this->assertSame("default_fragment", $fragment->getName());
     }
 
     public function testDescriptionIsSanitized(): void
     {
-        $batch = new Batch("dummy_name");
-        $fragment = new Fragment($batch, "dummy name", "this is not safe <script>");
+        $fragment = new Fragment("dummy name", "this is not safe <script>");
         $this->assertSame("this is not safe script ", $fragment->getDescription());
     }
 
     public function testEmptyDescriptionIsDerivatedFromNameValue(): void
     {
-        $batch = new Batch("dummy_name");
-        $fragment = new Fragment($batch, "dummy_name");
+        $fragment = new Fragment("dummy_name");
         $this->assertSame("No description provided for dummy name", $fragment->getDescription());
     }
 
     public function testElapsedTimeBetweenStartAndStopIsAccurate(): void
     {
-        $batch = new Batch("dummy_name");
-        $fragment = new Fragment($batch, "dummy_name");
+        $fragment = new Fragment("dummy_name");
         $fragment->start();
         usleep(20000); //sleep for 20ms
         $fragment->stop();
@@ -49,22 +44,20 @@ final class FragmentTest extends TestCase
 
     public function testCountNumberOfLinesInFile(): void
     {
-        $batch = new Batch("dummy_name");
         $data = "line 1". PHP_EOL . "line 2". PHP_EOL . "line 3";
         $tempFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR. uniqid();
         file_put_contents($tempFile, $data);
-        $fragment = new Fragment($batch, "dummy_name");
+        $fragment = new Fragment("dummy_name");
         $fragment->countLines($tempFile);
         $this->assertSame(3, $fragment->getLinesCount());
     }
 
     public function testGetFileSize(): void
     {
-        $batch = new Batch("dummy_name");
         $data = "line 1". PHP_EOL . "line 2". PHP_EOL . "line 3";
         $tempFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR. uniqid();
         file_put_contents($tempFile, $data);
-        $fragment = Fragment::withFileStats($batch, $tempFile, "dummy_name");
+        $fragment = Fragment::withFileStats($tempFile, "dummy_name");
         $expectedFileSize = 18 + (strlen(PHP_EOL) * 2);
         $this->assertSame($expectedFileSize, $fragment->getFileSize());
     }

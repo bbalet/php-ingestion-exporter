@@ -44,33 +44,20 @@ final class BatchTest extends TestCase
     public function testGetFragmentByNameInFragmentsCollection(): void
     {
         $batch = new Batch("dummy_name");
-        $fragment = $batch->startFragment("file1");
+        $batch->startFragment("file1");
         $fragmentFromCol = $batch->getFragmentByName("file1");
         $this->assertSame("file1", $fragmentFromCol->getName());
-    }
-
-    public function testStartAndStopAFragmentUsingObjectReference(): void
-    {
-        $batch = new Batch("dummy_name");
-        $fragment = $batch->startFragment("file1");
-        usleep(20000); //sleep for 20ms
-        $fragment->stop();
-        $elapsedTime = $fragment->getElaspedTime();
-        $this->assertEqualsWithDelta(0.020, $elapsedTime, 0.009);
-        $fragmentFromCol = $batch->getFragmentByName("file1");
-        $elapsedTime = $fragmentFromCol->getElaspedTime();
-        $this->assertEqualsWithDelta(0.020, $elapsedTime, 0.009);
     }
 
     public function testEndingABatchMustStopAllItsChildrenFragments(): void
     {
         $batch = new Batch("dummy_name");
-        $fragment1 = $batch->startFragment("file1");
-        $fragment2 = $batch->startFragment("file2");
+        $batch->startFragment("file1");
+        $batch->startFragment("file2");
         usleep(20000); //sleep for 20ms
         $batch->stop();
-        $elapsedTime1 = $fragment1->getElaspedTime();
-        $elapsedTime2 = $fragment2->getElaspedTime();
+        $elapsedTime1 = $batch->getFragmentByName("file1")->getElaspedTime();
+        $elapsedTime2 = $batch->getFragmentByName("file1")->getElaspedTime();
         $this->assertEqualsWithDelta(0.020, $elapsedTime1, 0.009);
         $this->assertEqualsWithDelta(0.020, $elapsedTime2, 0.009);
     }
@@ -78,8 +65,8 @@ final class BatchTest extends TestCase
     public function testDuplicatingAFragmentJustEraseTheFirstOne(): void
     {
         $batch = new Batch("dummy_name");
-        $fragment1 = $batch->startFragment("file1", "description");
-        $fragment2 = $batch->startFragment("file1", "new");
+        $batch->startFragment("file1", "description");
+        $batch->startFragment("file1", "new");
         $fragmentFromCol = $batch->getFragmentByName("file1");
         $this->assertSame("new", $fragmentFromCol->getDescription());
     }
@@ -87,8 +74,8 @@ final class BatchTest extends TestCase
     public function testIterateOnFragmentsAndDisplayTheirNames(): void
     {
         $batch = new Batch("dummy_name");
-        $fragment1 = $batch->startFragment("file1");
-        $fragment2 = $batch->startFragment("file2");
+        $batch->startFragment("file1");
+        $batch->startFragment("file2");
         $fragments = $batch->getFragments();
         foreach ($fragments as $fragment) {
             $this->assertContains($fragment->getName(), ["file1", "file2"]);

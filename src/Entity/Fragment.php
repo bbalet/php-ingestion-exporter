@@ -10,12 +10,6 @@ class Fragment {
     use MeasurementTrait;
 
     /**
-     * The batch to which the fragment belong to
-     * @var Batch
-     */
-    private $parentBatch;
-
-    /**
      * Size of the file in bytes
      *
      * @var int
@@ -31,12 +25,10 @@ class Fragment {
 
     /**
      * Instanciate a Fragment which is most of the time a file
-     * @param \Bbalet\PhpIngestionExporter\Entity\Batch $parentBatch a fragment belongs to a batch
      * @param string $name Fragment name (this is sanitized)
      * @param string $description Fragment description, if null derivated from name
      */
-    function __construct(Batch $parentBatch, $name, $description = null) {
-        $this->parentBatch = $parentBatch;
+    function __construct($name, $description = null) {
         $this->statusCode = self::UNKNOWN;
         $this->setName($name);
         $this->setDescription($description);
@@ -54,8 +46,8 @@ class Fragment {
      * @param int $linesCount
      * @return Fragment
      */
-    static function createFromDB($batch, $id, $name, $description, $startTime, $endTime, $statusCode, $fileSize, $linesCount) {
-        $instance = new self($batch, $name, $description);
+    static function createFromDB($id, $name, $description, $startTime, $endTime, $statusCode, $fileSize, $linesCount) {
+        $instance = new self($name, $description);
         $instance->id = $id;
         $instance->microStartTime = $startTime;
         $instance->microEndTime = $endTime;
@@ -67,14 +59,13 @@ class Fragment {
 
     /**
      * Instanciate a Fragment with file stats
-     * @param \Bbalet\PhpIngestionExporter\Entity\Batch $parentBatch a fragment belongs to a batch
      * @param string $name Fragment name (this is sanitized)
      * @param string $description Fragment description, if null derivated from name
      * @param string $filePath path to the file
      * @return Fragment
      */
-    public static function withFileStats(Batch $parentBatch, $filePath, $name, $description = null) {
-        $instance = new self($parentBatch, $name, $description);
+    public static function withFileStats($filePath, $name, $description = null) {
+        $instance = new self($name, $description);
         $instance->linesCount = $instance->countLines($filePath);
         $instance->fileSize = filesize($filePath);
         return $instance;
@@ -121,6 +112,15 @@ class Fragment {
     }
 
     /**
+     * Set the number of lines in the file
+     * @param int $linesCount number of lines
+     * @return void
+     */
+    public function setLinesCount($linesCount) {
+        $this->linesCount = $linesCount;
+    }
+
+    /**
      * Return the size of the file in bytes
      * @return int size of the file
      */
@@ -129,10 +129,11 @@ class Fragment {
     }
 
     /**
-     * Return the parent batch
-     * @return Batch
+     * Set the size of the file in bytes
+     * @param int $fileSize size of the file
+     * @return void
      */
-    function getBatch() {
-        return $this->parentBatch;
+    public function setFileSize($fileSize) {
+        $this->fileSize = $fileSize;
     }
 }

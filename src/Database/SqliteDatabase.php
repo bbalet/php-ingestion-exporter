@@ -4,6 +4,7 @@ namespace Bbalet\PhpIngestionExporter\Database;
 
 use Bbalet\PhpIngestionExporter\Entity\BatchType;
 use Bbalet\PhpIngestionExporter\Entity\Batch;
+use Bbalet\PhpIngestionExporter\Entity\Fragment;
 
 /**
  * SQLite database implementation
@@ -83,8 +84,35 @@ class SqliteDatabase extends AbstractDatabase
             ':end_time' => $batch->getEndTime(),
             ':status_code' => $batch->getStatusCode()
             ));
-        //TODO: Insert the collection of fragments
-        //see : https://stackoverflow.com/questions/1176352/pdo-prepared-inserts-multiple-rows-in-single-query
+
+        //Get the last inserted row id
+        $stmt = $this->pdoConnection->query("SELECT last_insert_rowid() AS id;");
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $batch->setId($row['id']);
+
+        //Insert the collection of fragments
+        $fragments = $batch->getFragments();
+        if (count($fragments) > 0) {
+            $data = [];
+            foreach ($fragments as $fragment) {
+                $data[] = [
+                    $batch->getId(),
+                    $fragment->getName(),
+                    $fragment->getDescription(),
+                    $fragment->getStartTime(),
+                    $fragment->getEndTime(),
+                    $fragment->getStatusCode(),
+                    $fragment->getLinesCount(),
+                    $fragment->getFileSize()
+                ];
+            }
+
+            $values = str_repeat('?,', count($data[0]) - 1) . '?';
+            $sql = "INSERT INTO {$this->prefix}_fragment (batch_id, name, description, start_time, end_time, status_code, lines, filesize) VALUES " .
+                    str_repeat("($values),", count($data) - 1) . "($values)";    
+            $stmt = $this->pdoConnection->prepare($sql);
+            $stmt->execute(array_merge(...$data));
+        }
     }
 
     /**
@@ -93,12 +121,12 @@ class SqliteDatabase extends AbstractDatabase
      * @return Batch
      */
     public function getLastBatch($name) {
+        //Get the last batch of the given batch type
         $stmt = $this->pdoConnection->query("SELECT * FROM {$this->prefix}_batch, {$this->prefix}_batch_type
             WHERE batch_type_id = {$this->prefix}_batch_type.id AND name=:name
             ORDER BY date(start_time) ASC LIMIT 1;");
         $stmt->execute(array(':name' => $name));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        
         $batch = Batch::createFromDB(
             $row['id'],
             $row['name'],
@@ -107,9 +135,21 @@ class SqliteDatabase extends AbstractDatabase
             $row['end_time'],
             $row['status_code']);
 
-        //Load the list of fragments
-        //TODO: look if we can do it with a JOIN with SQLite
-
+        //Load the list of fragments that are part of the batch
+        $stmt = $this->pdoConnection->query("SELECT * FROM {$this->prefix}_fragment WHERE batch_id=:batch_id");
+        $stmt->execute(array(':batch_id' => $batch->getId()));
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $fragment = Fragment::createFromDB(
+                $row['id'],
+                $row['name'],
+                $row['description'],
+                $row['start_time'],
+                $row['end_time'],
+                $row['status_code'],
+                $row['filesize'],
+                $row['lines']);
+            $batch->addFragment($fragment);
+        }
         return $batch;
     }
 
@@ -151,11 +191,13 @@ class SqliteDatabase extends AbstractDatabase
         $createFragmentTable = "CREATE TABLE IF NOT EXISTS {$this->prefix}_fragment (
             id INTEGER PRIMARY KEY,
             batch_id INTEGER,
+            name TEXT,
+            description TEXT,
             start_time REAL,
             end_time REAL,
             status_code INTEGER,
             lines INTEGER,
-            size INTEGER,
+            filesize INTEGER,
             CONSTRAINT {$this->prefix}_fragment_batch_id
             FOREIGN KEY (batch_id) REFERENCES {$this->prefix}_batch(id) 
         );";

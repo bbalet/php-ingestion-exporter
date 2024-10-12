@@ -4,9 +4,9 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/c90d88a8a791fd4f6080/maintainability)](https://codeclimate.com/github/bbalet/php-ingestion-exporter/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/c90d88a8a791fd4f6080/test_coverage)](https://codeclimate.com/github/bbalet/php-ingestion-exporter/test_coverage)
 
-**php-ingestion-exporter** is a PHP library that suggests a unified way to log information about data ingestion and export it (e.g. Prometheus status page).
+**php-ingestion-exporter** is a PHP library to export simple metrics about data ingestion to Prometheus with a status page (it can be easily extended to support additionnal use cases).
 
-It is framework agnostic, doesn't use an ORM, has no dependency, and is designed to work with PHP7.2+.
+It is framework agnostic, doesn't use an ORM, has no dependency, and is designed to work with PHP7.2 up to PHP8.2.
 
 For example, a data ingestion can be composed of one or many files and you want to keep track of the total time of the inggestion and (maybe) the detail for each file.
 The sample code below will show you how it works:
@@ -59,12 +59,12 @@ Afterward, you need to :
 
 ## Prerequisites
 
-php-ingestion-exporter requires a connection to an existing database, it can build the needed tables for you:
+php-ingestion-exporter requires a connection to an existing database with enough priviledges to create or alter tables int the schema, it can build the needed tables for you:
 
     use Bbalet\PhpIngestionExporter\PDOIngestionLogger;
 
     $logger = new PDOIngestionLogger($pdoConnection);
-    $logger->migrate();     //this will not delete existing tables
+    
 
 With the exception of SQLite for which it will create the database file if it doesn't exist.
 
