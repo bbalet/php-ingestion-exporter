@@ -15,8 +15,8 @@ final class BatchAsGaugeTest extends TestCase
         $elapsedTime = strval($batch->getElaspedTime());
         $batchAsGauge = new BatchAsGauge($batch);
 
-        $expected = 'HELP dummy_name_duration_seconds Test of gauge' . PHP_EOL
-                .   'TYPE dummy_name_duration_seconds gauge' . PHP_EOL
+        $expected = '# HELP dummy_name_duration_seconds Test of gauge' . PHP_EOL
+                .   '# TYPE dummy_name_duration_seconds gauge' . PHP_EOL
                 .   'dummy_name_duration_seconds ' . $elapsedTime . PHP_EOL;
 
         $this->assertSame($expected, $batchAsGauge->export());

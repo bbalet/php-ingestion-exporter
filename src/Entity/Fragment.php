@@ -28,7 +28,7 @@ class Fragment {
      * @param string $name Fragment name (this is sanitized)
      * @param string $description Fragment description, if null derivated from name
      */
-    function __construct($name, $description = null) {
+    function __construct($name, $description = "") {
         $this->statusCode = self::UNKNOWN;
         $this->setName($name);
         $this->setDescription($description);

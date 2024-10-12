@@ -99,8 +99,8 @@ class SqliteDatabase extends AbstractDatabase
                     $batch->getId(),
                     $fragment->getName(),
                     $fragment->getDescription(),
-                    $fragment->getStartTime(),
-                    $fragment->getEndTime(),
+                    strval($fragment->getStartTime()),
+                    strval($fragment->getEndTime()),
                     $fragment->getStatusCode(),
                     $fragment->getLinesCount(),
                     $fragment->getFileSize()
@@ -118,39 +118,44 @@ class SqliteDatabase extends AbstractDatabase
     /**
      * Get the last executed Batch entity from the database
      * @param string $name
-     * @return Batch
+     * @return Batch the batch or null if not found
      */
     public function getLastBatch($name) {
         //Get the last batch of the given batch type
         $stmt = $this->pdoConnection->query("SELECT * FROM {$this->prefix}_batch, {$this->prefix}_batch_type
-            WHERE batch_type_id = {$this->prefix}_batch_type.id AND name=:name
+            WHERE batch_type_id = {$this->prefix}_batch_type.id
+            AND name=:name
             ORDER BY date(start_time) ASC LIMIT 1;");
         $stmt->execute(array(':name' => $name));
         $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $batch = Batch::createFromDB(
-            $row['id'],
-            $row['name'],
-            $row['description'],
-            $row['start_time'],
-            $row['end_time'],
-            $row['status_code']);
-
-        //Load the list of fragments that are part of the batch
-        $stmt = $this->pdoConnection->query("SELECT * FROM {$this->prefix}_fragment WHERE batch_id=:batch_id");
-        $stmt->execute(array(':batch_id' => $batch->getId()));
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $fragment = Fragment::createFromDB(
+        if ($row !== false) {
+            $batch = Batch::createFromDB(
                 $row['id'],
                 $row['name'],
                 $row['description'],
-                $row['start_time'],
-                $row['end_time'],
-                $row['status_code'],
-                $row['filesize'],
-                $row['lines']);
-            $batch->addFragment($fragment);
+                floatval($row['start_time']),
+                floatval($row['end_time']),
+                $row['status_code']);
+
+            //Load the list of fragments that are part of the batch
+            $stmt = $this->pdoConnection->query("SELECT * FROM {$this->prefix}_fragment WHERE batch_id=:batch_id");
+            $stmt->execute(array(':batch_id' => $batch->getId()));
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $fragment = Fragment::createFromDB(
+                    $row['id'],
+                    $row['name'],
+                    $row['description'],
+                    floatval($row['start_time']),
+                    floatval($row['end_time']),
+                    $row['status_code'],
+                    $row['filesize'],
+                    $row['lines']);
+                $batch->addFragment($fragment);
+            }
+            return $batch;
+        } else {
+            return null;
         }
-        return $batch;
     }
 
     /**

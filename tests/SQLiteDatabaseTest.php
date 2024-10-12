@@ -5,7 +5,7 @@ use Bbalet\PhpIngestionExporter\Database\DatabaseFactory;
 use Bbalet\PhpIngestionExporter\Entity\BatchType;
 use Bbalet\PhpIngestionExporter\Entity\Batch;
 
-final class MySQLDatabaseTest extends TestCase
+final class SQLiteDatabaseTest extends TestCase
 {
 
     public function testSetAndGetParameterFromDatabase(): void

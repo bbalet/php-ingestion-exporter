@@ -23,7 +23,7 @@ class Batch extends BatchType {
      * @param mixed $description description of the batch (derivated from name is null)
      * @param mixed $id Optional unique identifier of the batch
      */
-    function __construct($name, $description = null, $id = null) {
+    function __construct($name, $description = "", $id = null) {
         $this->fragments = new \ArrayObject();
         parent::__construct($name, $description, $id);
     }
@@ -104,7 +104,7 @@ class Batch extends BatchType {
      * @param string $name name of the fragment
      * @return void
      */
-    public function startFragmentWithFileStats($filePath, $name, $description = null) {
+    public function startFragmentWithFileStats($filePath, $name, $description = "") {
         $fragment = Fragment::withFileStats($filePath, $name, $description);
         $fragment->start();
         $this->fragments[$name] = $fragment;

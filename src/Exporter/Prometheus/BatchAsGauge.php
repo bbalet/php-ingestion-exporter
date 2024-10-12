@@ -29,8 +29,8 @@ class BatchAsGauge implements IExportableItem {
      * @return string the Prometheus metric as a string
      */
     public function export() {
-        $output = 'HELP ' . $this->batch->getName() . '_duration_seconds ' . ucfirst($this->batch->getDescription()) . PHP_EOL;
-        $output .= 'TYPE ' . $this->batch->getName() . '_duration_seconds gauge' . PHP_EOL;
+        $output = '# HELP ' . $this->batch->getName() . '_duration_seconds ' . ucfirst($this->batch->getDescription()) . PHP_EOL;
+        $output .= '# TYPE ' . $this->batch->getName() . '_duration_seconds gauge' . PHP_EOL;
         $output .= $this->batch->getName() . '_duration_seconds ' . strval($this->batch->getElaspedTime()) . PHP_EOL;
         return $output;
     }

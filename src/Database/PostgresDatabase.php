@@ -7,15 +7,15 @@ use Bbalet\PhpIngestionExporter\Entity\Batch;
 use Bbalet\PhpIngestionExporter\Entity\Fragment;
 
 /**
- * MySQLDatabase database implementation
- * This class is responsible for managing the MySQLDatabase database
+ * PostgresDatabase database implementation
+ * This class is responsible for managing the PostgresDatabase database
  * it creates the schema and provides methods to interact with it
  * TODO : test this class
  */
-class MySQLDatabase extends AbstractDatabase
+class PostgresDatabase extends AbstractDatabase
 {
     /**
-     * Construct a repository with a PDO connection to the MySQLDatabase database
+     * Construct a repository with a PDO connection to the PostgresDatabase database
      * @param \PDO $pdoConnection
      */
     public function __construct($pdoConnection, $prefix = 'pingexp_')

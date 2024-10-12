@@ -64,8 +64,8 @@ final class DatabaseFactory
             case 'sqlite':
                 static::$database = new SqliteDatabase($pdoConnection, $prefix);
                 break;
-            /*case 'sqlsrv':
-                static::$database = new SqlServerDatabase($pdoConnection);
+            case 'sqlsrv':
+                static::$database = new SQLServerDatabase($pdoConnection);
                 break;
             case 'mysql':
                 static::$database = new MysqlDatabase($pdoConnection);
@@ -73,18 +73,7 @@ final class DatabaseFactory
             case 'pgsql':
                 static::$database = new PostgresDatabase($pdoConnection);
                 break;
-            case 'oci':
-                static::$database = new OracleDatabase($pdoConnection);
-                break;
-            case 'cubrid':
-                static::$database = new CubridDatabase($pdoConnection);
-                break;
-            case 'odbc':
-                static::$database = new OdbcDatabase($pdoConnection);
-                break;
-            case 'firebird':
-                static::$database = new FirebirdDatabase($pdoConnection);
-                break;*/
+            //Other drivers are oci, cubrid, odbc, firebird...
             default:
                 throw new \Exception("Unsupported driver: $driver");
         }

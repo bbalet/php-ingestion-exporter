@@ -34,7 +34,7 @@ trait EntityTrait {
      */
     protected function setName($name) {
         $this->name = preg_replace('/[^a-z0-9]+/', '_', strtolower($name));
-        if ($this->name === '' or $this->name === '_') {
+        if ($this->name == '' or $this->name == '_') {
             $reflect = new \ReflectionClass($this);
             $this->name = 'default_' . strtolower($reflect->getShortName());
         }
@@ -47,7 +47,7 @@ trait EntityTrait {
      * @return void
      */
     protected function setDescription($description) {
-        if (is_null($description)) {
+        if ($description == "" or $description == "_") {
             $this->description = 'No description provided for ' . str_replace("_"," ", $this->name);
         } else {
             $this->description = preg_replace('/[^a-z0-9]+/', ' ', strtolower($description));

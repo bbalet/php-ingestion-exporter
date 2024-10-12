@@ -47,9 +47,9 @@ Other exportation are possible such as histograms (e.g. last batches) and counte
 The sample below shows how to export a more complex status (don't forget the call to *export* at the end of the builder):
 
     $logger->prometheusExporter()
-            ->lastExecutionOfBatchAsGauge("batch_name")
-            ->totalBatches()
-            ->totalFragments()
+            ->lastExecutionOf("batch_name")
+            ->BatchAsGauge()
+            ->ListOfFragmentsTime()
             ->export();
 
 
