@@ -5,13 +5,13 @@ namespace Bbalet\PhpIngestionExporter\Exception;
 /**
  * This exception occurs when a Batch was not found in the database
  */
-class BatchNotFound extends \Exception
+class BatchNotFoundException extends \Exception
 {
     /**
-     * Instanciate a FragmentNotFound exception
+     * Instanciate a BatchNotFound exception
      */
     public function __construct() {
-        $message = 'Batch not found in the database';
+        $message = 'Batch not found';
         parent::__construct($message);
     }
 }

@@ -26,12 +26,13 @@ abstract class AbstractDatabase
      * Set a parameter in the database
      * @param string $key
      * @param string $value
+     * @return void
      */
     abstract public function setParameter($key, $value);
 
     /**
      * Get the parameters from the database
-     * @return array
+     * @return array<string, string>
      */
     abstract public function getParameters();
 
@@ -60,12 +61,13 @@ abstract class AbstractDatabase
     /**
      * Get the last executed Batch entity from the database
      * @param string $name
-     * @return Batch
+     * @return Batch|null
      */
     abstract public function getLastBatch($name);
 
     /**
      * Migrate the schema of the database
+     * @return void
      */
     abstract protected function migrateSchema();    
 }

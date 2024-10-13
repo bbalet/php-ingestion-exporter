@@ -6,6 +6,7 @@ use Bbalet\PhpIngestionExporter\Exporter\Prometheus\BatchAsGauge;
 use Bbalet\PhpIngestionExporter\Exporter\Prometheus\ListOfFragmentsTime;
 use Bbalet\PhpIngestionExporter\Exporter\Prometheus\ListOfFragmentsStatus;
 use Bbalet\PhpIngestionExporter\Database\AbstractDatabase;
+use Bbalet\PhpIngestionExporter\Entity\Batch;
 
 /**
  * Export the given collection of batches to prometheus format.
@@ -16,13 +17,13 @@ class PrometheusExporter {
 
     /**
      * Collection of Exportable items
-     * @var \ArrayObject
+     * @var \ArrayObject<string, IExportableItem>
      */
     private $exportableItems;
 
     /**
      * List of batches
-     * @var \ArrayObject
+     * @var \ArrayObject<string, Batch>
      */
     private $batches;
 
@@ -44,6 +45,7 @@ class PrometheusExporter {
      */
     function __construct(AbstractDatabase $db) {
         $this->db = $db;
+        $this->exportableItems = new \ArrayObject();
     }
 
     /**
@@ -57,10 +59,8 @@ class PrometheusExporter {
     public function export() {
         //Iterate on the internal array and format Each object
         $output = "";
-        if (!is_null($this->exportableItems)) {
-            foreach ($this->exportableItems as $item) {
-                $output .= $item->export() . PHP_EOL;
-            }
+        foreach ($this->exportableItems as $item) {
+            $output .= $item->export() . PHP_EOL;
         }
         return $output;
     }
@@ -73,7 +73,12 @@ class PrometheusExporter {
     public function lastExecutionOf($name) {
         $this->selectedBatch = $name;
         if (!$this->selectedBatch == "") {
-            $this->batches[$name] = $this->db->getLastBatch($name);
+            $batch = $this->db->getLastBatch($name);
+            if (!is_null($batch)) {
+                $this->batches[$name] = $batch;
+            } else {
+                $this->selectedBatch == "";
+            }
         }
         return $this;
     }

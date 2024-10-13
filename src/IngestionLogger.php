@@ -2,37 +2,99 @@
 
 namespace Bbalet\PhpIngestionExporter;
 
-use Bbalet\PhpIngestionExporter\Entity\BatchCollection;
+use Bbalet\PhpIngestionExporter\Entity\Batch;
+use Bbalet\PhpIngestionExporter\Database\AbstractDatabase;
+use Bbalet\PhpIngestionExporter\Database\DatabaseFactory;
+use Bbalet\PhpIngestionExporter\Exception\BatchNotFoundException;
 
+/**
+ * IngestionLogger is a class that allows to log the ingestion of data in a database.
+ */ 
 class IngestionLogger {
 
     /**
      * Collection of batches
-     * @var \ArrayObject
+     * @var \ArrayObject<string, Batch>
      */
     private $batches;
 
     /**
      * PDO Object for the database
-     * @var \PDO
+     * @var AbstractDatabase
      */
-    private $dbConnection;
+    private $db;
 
+    /**
+     * Instantiate a IngestionLogger object
+     */
     public function __construct() {
         $this->batches = new \ArrayObject();
         
     }
 
+    /**
+     * Create a IngestionLogger object from a PDO connection
+     * @param \PDO $connectionObject
+     * @return IngestionLogger
+     */
     public static function withPDOObject($connectionObject) {
         $instance = new self();
-        
+        $instance->db = DatabaseFactory::getDatabaseFromPDOObject($connectionObject);
         return $instance;
     }
 
+    /**
+     * Create a IngestionLogger object from a connection string
+     * @param string $connectionString
+     * @return IngestionLogger
+     */
     public static function withConnectionString($connectionString) {
         $instance = new self();
-        
+        $instance->db = DatabaseFactory::getDatabaseFromConnectionString($connectionString);
         return $instance;
+    }
+
+    /**
+     * Add a batch to the collection and start it
+     * @param string $name name of the batch
+     * @param string $description description of the batch
+     * @return Batch
+     */
+    public function startBatch($name, $description = "") {
+        $batch = new Batch($name, $description);
+        $batch->start();
+        $this->batches->append($batch);
+        return $batch;
+    }
+
+    /**
+     * Stop a batch from its name
+     * @param string $name name of the fragment
+     * @return void
+     * @throws BatchNotFoundException
+     */
+    public function stopBatch($name) {
+        if ($this->batches->offsetExists($name)) {
+            $batch = $this->batches->offsetGet($name);
+            $batch->stop();
+            $this->db->setBatch($batch);
+        } else {
+            throw new BatchNotFoundException();
+        }
+    }
+
+    /**
+     * Get a batch from its name
+     * @param string $name name of the fragment
+     * @return Batch
+     * @throws BatchNotFoundException
+     */
+    public function getBatch($name) {
+        if ($this->batches->offsetExists($name)) {
+            return $this->batches->offsetGet($name);
+        } else {
+            throw new BatchNotFoundException();
+        }
     }
 
 }

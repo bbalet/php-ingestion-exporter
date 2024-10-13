@@ -22,7 +22,7 @@ class Parameter {
     /**
      * Instanciate a parameter
      * @param string $key parameter name
-     * @param mixed $value parameter value
+     * @param string $value parameter value
      */
     public function __construct($key, $value) {
         $this->key = $key;

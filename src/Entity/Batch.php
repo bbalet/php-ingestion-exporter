@@ -2,7 +2,7 @@
 
 namespace Bbalet\PhpIngestionExporter\Entity;
 
-use Bbalet\PhpIngestionExporter\Exception\FragmentNotFound;
+use Bbalet\PhpIngestionExporter\Exception\FragmentNotFoundException;
 
 /**
  * A Batch is used to measure an ingestion of data.
@@ -13,15 +13,15 @@ class Batch extends BatchType {
 
     /**
      * Collection of Fragments
-     * @var \ArrayObject
+     * @var \ArrayObject<string, Fragment>
      */
     private $fragments;
 
     /**
      * Instantiate a Batch object
-     * @param mixed $name name of the batch (sanitized)
-     * @param mixed $description description of the batch (derivated from name is null)
-     * @param mixed $id Optional unique identifier of the batch
+     * @param string $name name of the batch (sanitized)
+     * @param string $description description of the batch (derivated from name is null)
+     * @param int $id Optional unique identifier of the batch
      */
     function __construct($name, $description = "", $id = null) {
         $this->fragments = new \ArrayObject();
@@ -57,7 +57,7 @@ class Batch extends BatchType {
 
     /**
      * Return all fragments
-     * @return \ArrayObject
+     * @return \ArrayObject<string, Fragment>
      */
     public function getFragments() {
         return $this->fragments;
@@ -75,9 +75,10 @@ class Batch extends BatchType {
     /**
      * Add a fragment to the batch and start its timer
      * @param string $name name of the fragment
+     * @param string $description description of the fragment
      * @return void
      */
-    public function startFragment($name, $description = null) {
+    public function startFragment($name, $description = "") {
         $fragment = new Fragment($name, $description);
         $fragment->start();
         $this->fragments[$name] = $fragment;
@@ -88,20 +89,22 @@ class Batch extends BatchType {
      * @param string $name name of the fragment
      * @param int $statusCode status code of the fragment
      * @return void
-     * @throws FragmentNotFound
+     * @throws FragmentNotFoundException
      */
     public function stopFragment($name, $statusCode = Fragment::SUCCESS) {
-        if (!is_null($this->fragments[$name])) {
+        if ($this->fragments->offsetExists($name)) {
             $this->fragments[$name]->stop($statusCode);
         } else {
-            throw new FragmentNotFound();
+            throw new FragmentNotFoundException();
         }
     }
 
     /**
      * Add a fragment to the batch and start its timer
      * Additional details are gathered from the file
+     * @param string $filePath path to the file
      * @param string $name name of the fragment
+     * @param string $description description of the fragment
      * @return void
      */
     public function startFragmentWithFileStats($filePath, $name, $description = "") {
@@ -136,13 +139,13 @@ class Batch extends BatchType {
      * @param int $linesCount Number of lines in the file
      * @param int $statusCode Status code of the fragment
      * @return void
-     * @throws FragmentNotFound
+     * @throws FragmentNotFoundException
      */
     public function stopFragmentWithFileInfos($name, $fileSize, $linesCount, $statusCode = Fragment::SUCCESS) {
-        if (!is_null($this->fragments[$name])) {
+        if ($this->fragments->offsetExists($name)) {
             $this->fragments[$name]->stop($statusCode, $fileSize, $linesCount);
         } else {
-            throw new FragmentNotFound();
+            throw new FragmentNotFoundException();
         }
     }
 }

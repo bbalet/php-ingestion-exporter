@@ -60,14 +60,14 @@ class Fragment {
     /**
      * Instanciate a Fragment with file stats
      * @param string $name Fragment name (this is sanitized)
-     * @param string $description Fragment description, if null derivated from name
+     * @param string $description Fragment description, if empty derivated from name
      * @param string $filePath path to the file
      * @return Fragment
      */
-    public static function withFileStats($filePath, $name, $description = null) {
+    public static function withFileStats($filePath, $name, $description = "") {
         $instance = new self($name, $description);
         $instance->linesCount = $instance->countLines($filePath);
-        $instance->fileSize = filesize($filePath);
+        $instance->fileSize = filesize($filePath)?:0;
         return $instance;
     }
 
@@ -95,13 +95,20 @@ class Fragment {
     public function countLines($filePath, $endOfLine = PHP_EOL) {
         $linecount = 0;
         $handle = fopen($filePath, "r");
-        while(!feof($handle)){
-          $line = fgets($handle, 4096);
-          $linecount = $linecount + substr_count($line, $endOfLine);
+        if ($handle === false) {
+            return 0;
+        } else {
+            while(!feof($handle)){
+            $line = fgets($handle, 4096);
+            if ($line === false) {
+                break;
+            }
+            $linecount = $linecount + substr_count($line, $endOfLine);
+            }
+            fclose($handle);
+            $this->linesCount = $linecount + 1;
+            return $linecount;
         }
-        fclose($handle);
-        $this->linesCount = $linecount + 1;
-        return $linecount;
     }
 
     /**

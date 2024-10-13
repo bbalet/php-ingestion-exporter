@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use Bbalet\PhpIngestionExporter\Entity\Batch;
 use Bbalet\PhpIngestionExporter\Entity\Fragment;
+use Bbalet\PhpIngestionExporter\Exception\FragmentNotFoundException;
 
 final class BatchTest extends TestCase
 {
@@ -81,7 +82,6 @@ final class BatchTest extends TestCase
         foreach ($fragments as $fragment) {
             $this->assertContains($fragment->getName(), ["file1", "file2"]);
         }
-        
     }
 
     public function testInterruptingAFragmentSwitchesTheFragmentStatusToUnknown(): void
@@ -95,4 +95,17 @@ final class BatchTest extends TestCase
         $this->assertSame(Fragment::UNKNOWN, $batch->getFragmentByName("file2")->getStatusCode());
     }
 
+    public function testStoppingAnUnknownFragmentThrowsAnException(): void
+    {
+        $this->expectException(FragmentNotFoundException::class);
+        $batch = new Batch("dummy_name");
+        $batch->stopFragment("file1");
+    }
+
+    public function testStoppingAnUnknownFragmentWithFileInfosThrowsAnException(): void
+    {
+        $this->expectException(FragmentNotFoundException::class);
+        $batch = new Batch("dummy_name");
+        $batch->stopFragmentWithFileInfos("file1", 0, 0);
+    }
 }

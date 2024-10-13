@@ -17,17 +17,21 @@ class PostgresDatabase extends AbstractDatabase
     /**
      * Construct a repository with a PDO connection to the PostgresDatabase database
      * @param \PDO $pdoConnection
+     * @param bool $migrate whether to migrate the schema or not
+     * @param string $prefix prefix for the tables
      */
-    public function __construct($pdoConnection, $prefix = 'pingexp_')
+    public function __construct($pdoConnection, $migrate=true, $prefix = 'pingexp_')
     {
         $this->pdoConnection = $pdoConnection;
         $this->prefix = $prefix;
-        $this->migrateSchema();
+        if ($migrate) {
+            $this->migrateSchema();
+        }
     }
 
     /**
      * Get the parameters from the database
-     * @return array
+     * @return array<string, string>
      */
     public function getParameters() {
         $stmt = $this->pdoConnection->query("SELECT key, value FROM {$this->prefix}_parameter;");
@@ -39,6 +43,7 @@ class PostgresDatabase extends AbstractDatabase
      * Set a parameter in the database
      * @param string $key
      * @param string $value
+     * @return void
      */
     public function setParameter($key, $value) {
         $stmt = $this->pdoConnection->prepare("INSERT OR REPLACE INTO {$this->prefix}_parameter (key, value) VALUES (:key, :value);");
@@ -119,7 +124,7 @@ class PostgresDatabase extends AbstractDatabase
     /**
      * Get the last executed Batch entity from the database
      * @param string $name
-     * @return Batch the batch or null if not found
+     * @return Batch|null the batch or null if not found
      */
     public function getLastBatch($name) {
         //Get the last batch of the given batch type
@@ -160,7 +165,8 @@ class PostgresDatabase extends AbstractDatabase
     }
 
     /**
-     * Migrate the schema of the database
+     * Migrate the schema of the 
+     * @return void
      */
     protected function migrateSchema() {
         // Create the parameter table

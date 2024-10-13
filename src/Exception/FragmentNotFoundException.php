@@ -5,7 +5,7 @@ namespace Bbalet\PhpIngestionExporter\Exception;
 /**
  * This exception occurs when a fragment was not found in the batch
  */
-class FragmentNotFound extends \Exception
+class FragmentNotFoundException extends \Exception
 {
     /**
      * Instanciate a FragmentNotFound exception

@@ -9,7 +9,7 @@ namespace Bbalet\PhpIngestionExporter\Entity;
 trait EntityTrait {
     /**
      * Unique identifier that will be stored in DB
-     * @var int
+     * @var int|null
      */
     protected $id;
 
@@ -47,7 +47,7 @@ trait EntityTrait {
      * @return void
      */
     protected function setDescription($description) {
-        if ($description == "" or $description == "_") {
+        if ($description == '' or $description == '_') {
             $this->description = 'No description provided for ' . str_replace("_"," ", $this->name);
         } else {
             $this->description = preg_replace('/[^a-z0-9]+/', ' ', strtolower($description));
@@ -56,7 +56,7 @@ trait EntityTrait {
 
     /**
      * Return the unique identifier of the entity
-     * @return int internal id (in the DB)
+     * @return int|null internal id (in the DB)
      */
     public function getId(){
         return $this->id;
