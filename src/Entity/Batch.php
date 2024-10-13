@@ -119,10 +119,13 @@ class Batch extends BatchType {
      */
     public function stop($statusCode = self::SUCCESS) {
         $this->statusCode = $statusCode;
-        $this->microEndTime = microtime(true);
+        $this->isStarted = false;
         foreach ($this->fragments as $fragment) {
-            $fragment->stop(Fragment::UNKNOWN);
+            if ($fragment->getIsStarted()) {
+                $fragment->stop(Fragment::UNKNOWN);
+            }
         }
+        $this->microEndTime = microtime(true);
     }
 
     /**

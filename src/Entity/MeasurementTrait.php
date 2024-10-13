@@ -34,10 +34,17 @@ trait MeasurementTrait {
     private $statusCode;
 
     /**
+     * Flag to know if the measurement has started
+     * @var bool
+     */
+    private $isStarted = false;
+
+    /**
      * Start a measurement, save the current time in microseconds
      * @return void
      */
     public function start() {
+        $this->isStarted = true;
         $this->microStartTime = microtime(true);
     }
 
@@ -71,6 +78,14 @@ trait MeasurementTrait {
      */
     public function getStatusCode() {
         return $this->statusCode;
+    }
+
+    /**
+     * Return the value of the isStarted attribute
+     * @return bool
+     */
+    public function getIsStarted() {
+        return $this->isStarted;
     }
 
     /**

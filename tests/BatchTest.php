@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Bbalet\PhpIngestionExporter\Entity\Batch;
+use Bbalet\PhpIngestionExporter\Entity\Fragment;
 
 final class BatchTest extends TestCase
 {
@@ -81,6 +82,17 @@ final class BatchTest extends TestCase
             $this->assertContains($fragment->getName(), ["file1", "file2"]);
         }
         
+    }
+
+    public function testInterruptingAFragmentSwitchesTheFragmentStatusToUnknown(): void
+    {
+        $batch = new Batch("dummy_name");
+        $batch->startFragment("file1");
+        $batch->stopFragment("file1");
+        $batch->startFragment("file2");
+        $batch->stop();
+        $this->assertSame(Fragment::SUCCESS, $batch->getFragmentByName("file1")->getStatusCode());
+        $this->assertSame(Fragment::UNKNOWN, $batch->getFragmentByName("file2")->getStatusCode());
     }
 
 }

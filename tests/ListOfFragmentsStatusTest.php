@@ -16,7 +16,7 @@ final class ListOfFragmentsStatusTest extends TestCase
         $batch->stopFragment("file2", Fragment::FAILURE);
         $listOfStatus = new ListOfFragmentsStatus($batch);
 
-        $expected = '# HELP dummy_name_component List of fragments for the batch dummy_name. 0 - Success, 1 - Failure, 2 - Warning, 3 - Unknown, 4 - Partial, 5 - Timeout, 6 - Not Found' . PHP_EOL
+        $expected = '# HELP dummy_name_component List of fragments status for the batch dummy_name. 0 - Success, 1 - Failure, 2 - Warning, 3 - Unknown, 4 - Partial, 5 - Timeout, 6 - Not Found' . PHP_EOL
                 .   '# TYPE dummy_name_component gauge' . PHP_EOL
                 .   'dummy_name_component{component="file1",description="file 1"} 0' . PHP_EOL
                 .   'dummy_name_component{component="file2",description="file 2"} 1' . PHP_EOL;

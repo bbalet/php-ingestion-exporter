@@ -79,10 +79,11 @@ class Fragment {
      * @return void
      */
     public function stop($statusCode = self::SUCCESS, $fileSize = 0, $linesCount = 0) {
+        $this->microEndTime = microtime(true);
         $this->statusCode = $statusCode;
         $this->fileSize = $fileSize;
         $this->linesCount = $linesCount;
-        $this->microEndTime = microtime(true);
+        $this->isStarted = false;
     }
 
     /**

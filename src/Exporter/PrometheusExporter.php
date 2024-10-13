@@ -3,6 +3,8 @@
 namespace Bbalet\PhpIngestionExporter\Exporter;
 
 use Bbalet\PhpIngestionExporter\Exporter\Prometheus\BatchAsGauge;
+use Bbalet\PhpIngestionExporter\Exporter\Prometheus\ListOfFragmentsTime;
+use Bbalet\PhpIngestionExporter\Exporter\Prometheus\ListOfFragmentsStatus;
 use Bbalet\PhpIngestionExporter\Database\AbstractDatabase;
 
 /**
@@ -77,7 +79,7 @@ class PrometheusExporter {
     }
 
     /**
-     * Select a batch to export
+     * Export a batch as a gauge
      * @return PrometheusExporter
      */
     public function BatchAsGauge() {
@@ -89,4 +91,29 @@ class PrometheusExporter {
         return $this;
     }
 
+    /**
+     * Export the list of fragments of a batch and their execution times 
+     * @return PrometheusExporter
+     */
+    public function ListOfFragmentsTime() {
+        if (!$this->selectedBatch == "") {
+            if (!is_null($this->batches[$this->selectedBatch])) {
+                $this->exportableItems[] = new ListOfFragmentsTime($this->batches[$this->selectedBatch]);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Export the list of fragments of a batch and their status code
+     * @return PrometheusExporter
+     */
+    public function ListOfFragmentsStatus() {
+        if (!$this->selectedBatch == "") {
+            if (!is_null($this->batches[$this->selectedBatch])) {
+                $this->exportableItems[] = new ListOfFragmentsStatus($this->batches[$this->selectedBatch]);
+            }
+        }
+        return $this;
+    }
 }

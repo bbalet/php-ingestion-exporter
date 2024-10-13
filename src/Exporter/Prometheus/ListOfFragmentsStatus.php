@@ -31,7 +31,7 @@ class ListOfFragmentsStatus implements IExportableItem {
      * @return string the Prometheus metric as a string
      */
     public function export() {
-        $output = '# HELP ' . $this->batch->getName() . '_component List of fragments for the batch ' . $this->batch->getName()
+        $output = '# HELP ' . $this->batch->getName() . '_component List of fragments status for the batch ' . $this->batch->getName()
          . '. 0 - Success, 1 - Failure, 2 - Warning, 3 - Unknown, 4 - Partial, 5 - Timeout, 6 - Not Found'. PHP_EOL;
         $output .= '# TYPE ' . $this->batch->getName() . '_component gauge' . PHP_EOL;
         foreach ($this->batch->getFragments() as $fragment) {
