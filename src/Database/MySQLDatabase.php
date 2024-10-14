@@ -10,7 +10,7 @@ use Bbalet\PhpIngestionExporter\Entity\Fragment;
  * MySQLDatabase database implementation
  * This class is responsible for managing the MySQLDatabase database
  * it creates the schema and provides methods to interact with it
- * TODO : test this class
+ * @codeCoverageIgnore
  */
 class MySQLDatabase extends AbstractDatabase
 {

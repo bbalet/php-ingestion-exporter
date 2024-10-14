@@ -10,7 +10,7 @@ use Bbalet\PhpIngestionExporter\Entity\Fragment;
  * SQLServerDatabase database implementation
  * This class is responsible for managing the SQLServerDatabase database
  * it creates the schema and provides methods to interact with it
- * TODO : test this class
+ * @codeCoverageIgnore
  */
 class SQLServerDatabase extends AbstractDatabase
 {

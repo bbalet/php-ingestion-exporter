@@ -61,4 +61,19 @@ final class FragmentTest extends TestCase
         $expectedFileSize = 18 + (strlen(PHP_EOL) * 2);
         $this->assertSame($expectedFileSize, $fragment->getFileSize());
     }
+
+    public function testSetAndGetLinesCount(): void
+    {
+        $fragment = new Fragment("dummy_name");
+        $fragment->setLinesCount(10);
+        $this->assertSame(10, $fragment->getLinesCount());
+    }
+
+    public function testSetAndGetFileSize(): void
+    {
+        $fragment = new Fragment("dummy_name");
+        $fragment->setFileSize(100);
+        $this->assertSame(100, $fragment->getFileSize());
+    }
+
 }

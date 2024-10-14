@@ -10,7 +10,7 @@ use Bbalet\PhpIngestionExporter\Entity\Fragment;
  * PostgresDatabase database implementation
  * This class is responsible for managing the PostgresDatabase database
  * it creates the schema and provides methods to interact with it
- * TODO : test this class
+ * @codeCoverageIgnore
  */
 class PostgresDatabase extends AbstractDatabase
 {

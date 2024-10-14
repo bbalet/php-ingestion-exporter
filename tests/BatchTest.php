@@ -108,4 +108,14 @@ final class BatchTest extends TestCase
         $batch = new Batch("dummy_name");
         $batch->stopFragmentWithFileInfos("file1", 0, 0);
     }
+
+    public function testStopFragmentWithFileInfos(): void
+    {
+        $batch = new Batch("dummy_name");
+        $batch->startFragment("file1");
+        $batch->stopFragmentWithFileInfos("file1", 42, 11, Fragment::NOT_FOUND);
+        $this->assertSame(Fragment::NOT_FOUND, $batch->getFragmentByName("file1")->getStatusCode());
+        $this->assertSame(42, $batch->getFragmentByName("file1")->getFileSize());
+        $this->assertSame(11, $batch->getFragmentByName("file1")->getLinesCount());
+    }
 }

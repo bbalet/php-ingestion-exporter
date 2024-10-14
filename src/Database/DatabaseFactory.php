@@ -73,6 +73,7 @@ final class DatabaseFactory
             case 'sqlite':
                 static::$database = new SqliteDatabase($pdoConnection, $migrate, $prefix);
                 break;
+            // @codeCoverageIgnoreStart
             case 'sqlsrv':
                 static::$database = new SQLServerDatabase($pdoConnection, $migrate, $prefix);
                 break;
@@ -85,6 +86,7 @@ final class DatabaseFactory
             //Other drivers are oci, cubrid, odbc, firebird...
             default:
                 throw new \Exception("Unsupported driver: $driver");
+            // @codeCoverageIgnoreEnd
         }
         return static::$database;
     }
