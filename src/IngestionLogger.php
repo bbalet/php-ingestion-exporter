@@ -6,6 +6,7 @@ use Bbalet\PhpIngestionExporter\Entity\Batch;
 use Bbalet\PhpIngestionExporter\Database\AbstractDatabase;
 use Bbalet\PhpIngestionExporter\Database\DatabaseFactory;
 use Bbalet\PhpIngestionExporter\Exception\BatchNotFoundException;
+use Bbalet\PhpIngestionExporter\Exporter\PrometheusExporter;
 
 /**
  * IngestionLogger is a class that allows to log the ingestion of data in a database.
@@ -23,21 +24,28 @@ class IngestionLogger {
      * @var AbstractDatabase
      */
     private $db;
+    
+    /**
+     * Prometheus of exporter
+     * @var PrometheusExporter
+     */
+    private $prometheusExporter;
 
     /**
      * Instantiate a IngestionLogger object
      */
     public function __construct() {
         $this->batches = new \ArrayObject();
-        
     }
 
     /**
      * Create a IngestionLogger object from a PDO connection
      * @param \PDO $connectionObject
+     * @param bool $migrate whether to migrate the schema or not
+     * @param string $prefix table name prefix
      * @return IngestionLogger
      */
-    public static function withPDOObject($connectionObject) {
+    public static function withPDOObject($connectionObject, $migrate = true, $prefix = 'pingexp') {
         $instance = new self();
         $instance->db = DatabaseFactory::getDatabaseFromPDOObject($connectionObject);
         return $instance;
@@ -46,9 +54,11 @@ class IngestionLogger {
     /**
      * Create a IngestionLogger object from a connection string
      * @param string $connectionString
+     * @param bool $migrate whether to migrate the schema or not
+     * @param string $prefix table name prefix
      * @return IngestionLogger
      */
-    public static function withConnectionString($connectionString) {
+    public static function withConnectionString($connectionString, $migrate = true, $prefix = 'pingexp') {
         $instance = new self();
         $instance->db = DatabaseFactory::getDatabaseFromConnectionString($connectionString);
         return $instance;
@@ -96,5 +106,17 @@ class IngestionLogger {
             throw new BatchNotFoundException();
         }
     }
+
+    /**
+     * Instanciate a PrometheusExporter and return the instance
+     * @return PrometheusExporter
+     */
+    public function getPrometheusExporter() {
+        if ($this->prometheusExporter === null) {
+            $this->prometheusExporter = new PrometheusExporter($this->db);
+        }
+        return $this->prometheusExporter;
+    }
+
 
 }

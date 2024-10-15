@@ -1,0 +1,22 @@
+{
+    "name": "bbalet/example",
+    "minimum-stability": "dev",
+    "description": "Example of file ingestion metrics production and export",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Benjamin BALET",
+            "email": "benjamin.balet@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/bbalet/php-ingestion-exporter"
+        }
+    ],
+    "require": {
+        "bbalet/php-ingestion-exporter":"*"
+    }
+}
