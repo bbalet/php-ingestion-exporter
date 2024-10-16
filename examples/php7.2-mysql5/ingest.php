@@ -7,7 +7,7 @@ require './vendor/autoload.php';
 use Bbalet\PhpIngestionExporter\IngestionLogger;
 
 //The second parameter means that we will setup the database schema
-$connectionString = 'mysql:host=127.0.0.1;dbname=test_db;user=user;password=password';
+$connectionString = 'mysql:host=127.0.0.1;dbname=test_db;user=root;password=password';
 $logger = IngestionLogger::withConnectionString($connectionString, true);
 
 $batch = $logger->startBatch("example_php", "Example of ingestion with ");
@@ -22,3 +22,5 @@ $logger->getBatch("example_php")->stopFragment("file1");
 
 //stop the batch (and persist the result into the database)
 $logger->stopBatch("example_php");
+
+echo "Ingestion done\n";
